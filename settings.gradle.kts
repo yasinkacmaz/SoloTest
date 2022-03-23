@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -12,5 +14,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
+include(":app")
 rootProject.name = "SoloTest"
-include ':app'
