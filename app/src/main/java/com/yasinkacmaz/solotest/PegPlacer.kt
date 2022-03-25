@@ -1,6 +1,6 @@
 package com.yasinkacmaz.solotest
 
-/**
+/*
 Think of circle board as a grid
 Center and corner pins are empty initially
 That means there will be 32 pins initially
@@ -23,23 +23,10 @@ That means there will be 32 pins initially
 */
 object PegPlacer {
     fun placeToBoard(config: BoardConfig) = with(config) {
-        val spacingPx = (boardSize - (pegSize * gridSize)) / (gridSize + 1)
-        val center = (gridSize / 2) + 1
-        val pinRadius = pegSize / 2
-
-        buildList {
-            repeat(gridSize * gridSize) { gridIndex ->
-                val row = (gridIndex / gridSize) + 1
-                val column = (gridIndex % gridSize) + 1
-                val isRowInCorner = row <= cornerSize || (gridSize - row) < cornerSize
-                val isColumnInCorner = column <= cornerSize || gridSize - column < cornerSize
-                val isCenterIndex = row == center && column == center
-                if (isRowInCorner && isColumnInCorner || isCenterIndex) return@repeat
-
-                val pegX = boardX + (spacingPx * row) + (pegSize * row) - pinRadius
-                val pegY = boardY + (spacingPx * column) + (column * pegSize) - pinRadius
-                add(Peg(gridIndex = gridIndex, x = pegX, y = pegY))
-            }
+        val placeableBoardIndexes = config.boardIndexes.also {
+            it.remove(it.size / 2) // remove center index
+            it.removeAll(config.cornerIndexes)
         }
+        placeableBoardIndexes.map { boardIndex -> Peg(boardIndex = boardIndex) }
     }
 }
