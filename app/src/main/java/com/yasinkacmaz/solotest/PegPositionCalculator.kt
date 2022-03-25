@@ -6,10 +6,11 @@ object PegPositionCalculator {
     infix fun BoardConfig.positionOfIndex(boardIndex: Int): Offset {
         val row = (boardIndex / gridSize) + 1
         val column = (boardIndex % gridSize) + 1
-        val pinRadius = pegSize / 2
+        val pegRadius = pegSize / 2
+        val boardSize = boardRadius * 2
         val spacingPx = (boardSize - (pegSize * gridSize)) / (gridSize + 1)
-        val pegX = boardX + (spacingPx * row) + (pegSize * row) - pinRadius
-        val pegY = boardY + (spacingPx * column) + (column * pegSize) - pinRadius
+        val pegX = boardStartX + (spacingPx * row) + (pegSize * row) - pegRadius
+        val pegY = boardStartY + (spacingPx * column) + (column * pegSize) - pegRadius
         return Offset(pegX, pegY)
     }
 }
