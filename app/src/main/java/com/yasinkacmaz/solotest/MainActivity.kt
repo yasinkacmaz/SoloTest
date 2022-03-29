@@ -52,9 +52,8 @@ class MainActivity : ComponentActivity() {
                                 pegs[index] = peg.copy(offset = peg.offset.plus(Offset(offsetX, offsetY)))
                             }
                         }
-                    val selectedPegIndex: MutableState<Int?> = remember { mutableStateOf(null) }
 
-                    SoloTestGame(modifier, boardConfig, playableBoardIndexes, pegs, selectedPegIndex)
+                    SoloTestGame(modifier, boardConfig, playableBoardIndexes, pegs)
                 }
             }
         }
