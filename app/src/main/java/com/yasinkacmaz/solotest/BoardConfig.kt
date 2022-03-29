@@ -7,8 +7,10 @@ data class BoardConfig(
     val cornerSize: Int = 2,
     val boardRadius: Float,
     val boardCenter: Offset,
-    val pegSize: Float
+    val pegRadius: Float
 ) {
+    val pegSize = pegRadius * 2
+
     val boardIndexes get() = (0 until gridSize * gridSize).toMutableList()
 
     val cornerIndexes = boardIndexes.filter { boardIndex ->
