@@ -1,5 +1,7 @@
 package com.yasinkacmaz.solotest
 
+import com.yasinkacmaz.solotest.PegPositionCalculator.positionOfIndex
+
 /*
 Think of circle board as a grid
 Center and corner pins are empty initially
@@ -27,6 +29,8 @@ object PegPlacer {
             it.remove(it.size / 2) // remove center index
             it.removeAll(config.cornerIndexes)
         }
-        placeableBoardIndexes.map { boardIndex -> Peg(boardIndex = boardIndex) }
+        placeableBoardIndexes.map { boardIndex ->
+            Peg(boardIndex = boardIndex, offset = config.positionOfIndex(boardIndex))
+        }
     }
 }

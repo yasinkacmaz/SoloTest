@@ -1,3 +1,5 @@
 package com.yasinkacmaz.solotest
 
-data class Peg(val boardIndex: Int)
+import androidx.compose.ui.geometry.Offset
+
+data class Peg(val boardIndex: Int, var offset: Offset)
