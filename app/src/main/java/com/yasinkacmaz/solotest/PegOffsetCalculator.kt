@@ -2,8 +2,8 @@ package com.yasinkacmaz.solotest
 
 import androidx.compose.ui.geometry.Offset
 
-object PegPositionCalculator {
-    infix fun BoardConfig.positionOfIndex(boardIndex: Int): Offset {
+object PegOffsetCalculator {
+    infix fun BoardConfig.offsetOfBoardIndex(boardIndex: Int): Offset {
         val row = (boardIndex % gridSize) + 1
         val column = (boardIndex / gridSize) + 1
         val boardSize = boardRadius * 2

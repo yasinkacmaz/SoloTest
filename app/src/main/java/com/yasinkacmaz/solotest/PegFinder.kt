@@ -5,7 +5,11 @@ import kotlin.math.absoluteValue
 
 object PegFinder {
     fun pegAtOffset(pegs: List<Peg>, offset: Offset, pegRadius: Float): Peg? = pegs.firstOrNull { peg ->
-        val rem = peg.offset - offset
-        rem.x.absoluteValue <= pegRadius && rem.y.absoluteValue <= pegRadius
+        peg.offset.isOffsetInside(offset, pegRadius)
+    }
+
+    fun Offset.isOffsetInside(otherOffset: Offset, pegRadius: Float): Boolean {
+        val remainingDistance = this - otherOffset
+        return remainingDistance.x.absoluteValue <= pegRadius && remainingDistance.y.absoluteValue <= pegRadius
     }
 }

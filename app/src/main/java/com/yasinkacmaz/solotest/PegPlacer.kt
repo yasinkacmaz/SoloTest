@@ -1,6 +1,6 @@
 package com.yasinkacmaz.solotest
 
-import com.yasinkacmaz.solotest.PegPositionCalculator.positionOfIndex
+import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 
 /*
 Think of circle board as a grid
@@ -30,7 +30,7 @@ object PegPlacer {
             it.removeAll(config.cornerIndexes)
         }
         placeableBoardIndexes.map { boardIndex ->
-            Peg(boardIndex = boardIndex, offset = config.positionOfIndex(boardIndex))
+            Peg(boardIndex = boardIndex, offset = config.offsetOfBoardIndex(boardIndex))
         }
     }
 }
