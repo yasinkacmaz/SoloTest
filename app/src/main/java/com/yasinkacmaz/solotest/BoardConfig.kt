@@ -21,6 +21,8 @@ data class BoardConfig(
         isRowInCorner && isColumnInCorner
     }
 
+    val playableIndexes = boardIndexes - cornerIndexes
+
     val boardStartX = boardCenter.x - boardRadius
 
     val boardStartY = boardCenter.y - boardRadius

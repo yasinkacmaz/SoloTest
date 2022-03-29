@@ -10,7 +10,8 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
-import com.yasinkacmaz.solotest.PegPositionCalculator.positionOfIndex
+import com.yasinkacmaz.solotest.PegOffsetValidator.isValidOffset
+import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 
 @Composable
 fun SoloTestGame(
@@ -29,9 +30,10 @@ fun SoloTestGame(
 
     playableBoardIndexes.forEach { boardIndex ->
         val peg = pegs.find { peg -> peg.boardIndex == boardIndex }
-        val offset = peg?.offset ?: boardConfig positionOfIndex boardIndex
+        val offset = peg?.offset ?: boardConfig offsetOfBoardIndex boardIndex
         val style = if (peg != null) Fill else Stroke(width = 1.5.dp.toPx())
-        val color = if (boardIndex == selectedPegIndex.value) Color.Green else Color.Blue
+        print(selectedPegIndex)
+        val color = if (boardConfig.isValidOffset(offset)) Color.Green else Color.Red
         drawCircle(
             color = color,
             center = offset,
