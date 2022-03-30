@@ -1,5 +1,7 @@
 package com.yasinkacmaz.solotest
 
+import androidx.compose.ui.geometry.Offset
+import com.yasinkacmaz.solotest.PegFinder.isOffsetInside
 import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 
 /*
@@ -31,6 +33,13 @@ object PegPlacer {
         }
         placeableBoardIndexes.map { boardIndex ->
             Peg(boardIndex = boardIndex, offset = config.offsetOfBoardIndex(boardIndex))
+        }
+    }
+
+    fun placeToClosestHole(config: BoardConfig, offset: Offset): Int? {
+        return config.playableIndexes.firstOrNull { boardIndex ->
+            val holeOffset = config.offsetOfBoardIndex(boardIndex)
+            offset.isOffsetInside(holeOffset, config.pegRadius)
         }
     }
 }

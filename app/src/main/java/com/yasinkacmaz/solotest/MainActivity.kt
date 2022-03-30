@@ -6,13 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 import com.yasinkacmaz.solotest.ui.theme.SoloTestTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,27 +34,33 @@ class MainActivity : ComponentActivity() {
                     )
                     val playableBoardIndexes = boardConfig.boardIndexes.also { it.removeAll(boardConfig.cornerIndexes) }
                     val pegs =
-                        remember { mutableStateListOf<Peg>() }.also { it.addAll(PegPlacer.placeToBoard(boardConfig)) }
-                    var offsetX by remember { mutableStateOf(0f) }
-                    var offsetY by remember { mutableStateOf(0f) }
-                    var draggedPeg: Peg? by remember { mutableStateOf(null) }
+                        remember { mutableStateListOf<Peg>().also { it.addAll(PegPlacer.placeToBoard(boardConfig)) } }
+                    var draggedPegIndex: Int by remember { mutableStateOf(-1) }
                     val modifier = Modifier
                         .fillMaxSize()
                         .pointerInput(Unit) {
                             detectDragGestures(
                                 onDragStart = { offset ->
-                                    offsetX = 0f
-                                    offsetY = 0f
-                                    draggedPeg = PegFinder.pegAtOffset(pegs, offset, boardConfig.pegRadius)
+                                    val peg = PegFinder.pegAtOffset(pegs, offset, boardConfig.pegRadius)
+                                    draggedPegIndex = pegs.indexOf(peg)
+                                },
+                                onDragEnd = {
+                                    if (draggedPegIndex !in pegs.indices) return@detectDragGestures
+                                    val peg = pegs[draggedPegIndex]
+                                    val boardIndex = PegPlacer.placeToClosestHole(boardConfig, peg.offset)
+                                    pegs[draggedPegIndex] = if (boardIndex != null) {
+                                        val offset = boardConfig offsetOfBoardIndex boardIndex
+                                        peg.copy(boardIndex = boardIndex, offset = offset)
+                                    } else {
+                                        peg.copy(offset = boardConfig offsetOfBoardIndex peg.boardIndex)
+                                    }
                                 }
                             ) { change, dragAmount ->
                                 change.consumeAllChanges()
-                                offsetX += dragAmount.x
-                                offsetY += dragAmount.y
-                                val peg = draggedPeg ?: return@detectDragGestures
-                                val index = pegs.indexOfFirst { it.boardIndex == peg.boardIndex }
-                                if (index !in pegs.indices) return@detectDragGestures
-                                pegs[index] = peg.copy(offset = peg.offset.plus(Offset(offsetX, offsetY)))
+                                if (draggedPegIndex !in pegs.indices) return@detectDragGestures
+                                val peg = pegs[draggedPegIndex]
+                                val offset = peg.offset.plus(Offset(dragAmount.x, dragAmount.y))
+                                pegs[draggedPegIndex] = peg.copy(offset = offset)
                             }
                         }
 
