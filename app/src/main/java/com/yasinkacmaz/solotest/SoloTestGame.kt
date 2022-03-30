@@ -1,11 +1,13 @@
 package com.yasinkacmaz.solotest
 
+import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 import com.yasinkacmaz.solotest.PegOffsetValidator.isValidOffset
@@ -36,7 +38,6 @@ fun SoloTestGame(
 
     pegs.forEach { peg ->
         val offset = peg.offset
-        // TODO: No need to control after snapping added
         val color = if (boardConfig.isValidOffset(offset)) Color.Green else Color.Red
         drawCircle(
             color = color,
@@ -44,5 +45,17 @@ fun SoloTestGame(
             radius = boardConfig.pegSize / 2,
             style = Fill
         )
+        drawContext.canvas.nativeCanvas.apply {
+            drawText(
+                peg.boardIndex.toString(),
+                offset.x,
+                offset.y + 10,
+                Paint().apply {
+                    textSize = 50F
+                    this.color = android.graphics.Color.WHITE
+                    textAlign = Paint.Align.CENTER
+                }
+            )
+        }
     }
 }
