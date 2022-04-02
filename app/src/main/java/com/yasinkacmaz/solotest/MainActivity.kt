@@ -47,12 +47,33 @@ class MainActivity : ComponentActivity() {
                                 onDragEnd = {
                                     if (draggedPegIndex !in pegs.indices) return@detectDragGestures
                                     val peg = pegs[draggedPegIndex]
-                                    val boardIndex = PegPlacer.placeToClosestHole(boardConfig, peg.offset)
-                                    pegs[draggedPegIndex] = if (boardIndex != null) {
-                                        val offset = boardConfig offsetOfBoardIndex boardIndex
-                                        peg.copy(boardIndex = boardIndex, offset = offset)
+                                    val initialBoardIndex = peg.boardIndex
+                                    val currentBoardIndex = PegPlacer.placeToClosestHole(boardConfig, peg.offset)
+                                    var isMovementValid = false
+                                    pegs[draggedPegIndex] = if (currentBoardIndex != null) {
+                                        isMovementValid = PegMovementValidator.isMovementValid(
+                                            gridSize = boardConfig.gridSize,
+                                            pegs = pegs,
+                                            initialBoardIndex = initialBoardIndex,
+                                            currentBoardIndex = currentBoardIndex
+                                        )
+                                        if (isMovementValid) {
+                                            val offset = boardConfig offsetOfBoardIndex currentBoardIndex
+                                            peg.copy(boardIndex = currentBoardIndex, offset = offset)
+                                        } else {
+                                            peg.copy(offset = boardConfig offsetOfBoardIndex peg.boardIndex)
+                                        }
                                     } else {
                                         peg.copy(offset = boardConfig offsetOfBoardIndex peg.boardIndex)
+                                    }
+
+                                    if (isMovementValid) {
+                                        PegDeleter.deletePeg(
+                                            pegs = pegs,
+                                            gridSize = boardConfig.gridSize,
+                                            initialBoardIndex = initialBoardIndex,
+                                            currentBoardIndex = pegs[draggedPegIndex].boardIndex
+                                        )
                                     }
                                 }
                             ) { change, dragAmount ->
