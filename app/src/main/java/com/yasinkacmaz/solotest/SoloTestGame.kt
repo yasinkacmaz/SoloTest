@@ -9,53 +9,50 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
-import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
-import com.yasinkacmaz.solotest.PegOffsetValidator.isValidOffset
+import com.yasinkacmaz.solotest.PegFinder.isOffsetInside
 
 @Composable
-fun SoloTestGame(
-    modifier: Modifier = Modifier,
-    boardConfig: BoardConfig,
-    playableBoardIndexes: MutableList<Int>,
-    pegs: List<Peg>
-) = Canvas(modifier) {
+fun SoloTestGame(modifier: Modifier = Modifier, gameState: GameState) = Canvas(modifier) {
     drawCircle(
         color = Color.Red,
-        center = boardConfig.boardCenter,
-        radius = boardConfig.boardRadius,
+        center = gameState.boardCenter,
+        radius = gameState.boardRadius,
         style = Stroke(width = 3.dp.toPx())
     )
 
-    playableBoardIndexes.forEach { boardIndex ->
-        val offset = boardConfig offsetOfBoardIndex boardIndex
+    drawContext.canvas.nativeCanvas.apply {
+        drawText(
+            "Remaining: ${gameState.pegs.size}",
+            140F,
+            140F,
+            Paint().apply {
+                textSize = 80F
+                this.color = android.graphics.Color.RED
+                textAlign = Paint.Align.LEFT
+            }
+        )
+    }
+
+    gameState.holes.forEach { holeOffset ->
         drawCircle(
             color = Color.Green,
-            center = offset,
-            radius = boardConfig.pegSize / 2,
+            center = holeOffset,
+            radius = gameState.pegRadius,
             style = Stroke(width = 1.5.dp.toPx())
         )
     }
 
-    pegs.forEach { peg ->
-        val offset = peg.offset
-        val color = if (boardConfig.isValidOffset(offset)) Color.Green else Color.Red
+    gameState.pegs.forEach { peg ->
+        val pegOffset = peg.offset
+        val isValidOffset =
+            gameState.holes.any { holeOffset -> holeOffset.isOffsetInside(pegOffset, gameState.pegRadius) }
+
+        val color = if (isValidOffset) Color.Green else Color.Red
         drawCircle(
             color = color,
-            center = offset,
-            radius = boardConfig.pegSize / 2,
+            center = pegOffset,
+            radius = gameState.pegRadius,
             style = Fill
         )
-        drawContext.canvas.nativeCanvas.apply {
-            drawText(
-                peg.boardIndex.toString(),
-                offset.x,
-                offset.y + 10,
-                Paint().apply {
-                    textSize = 50F
-                    this.color = android.graphics.Color.WHITE
-                    textAlign = Paint.Align.CENTER
-                }
-            )
-        }
     }
 }

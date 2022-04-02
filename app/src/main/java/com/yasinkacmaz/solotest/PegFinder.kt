@@ -1,11 +1,13 @@
 package com.yasinkacmaz.solotest
 
 import androidx.compose.ui.geometry.Offset
+import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 import kotlin.math.absoluteValue
 
 object PegFinder {
-    fun pegAtOffset(pegs: List<Peg>, offset: Offset, pegRadius: Float): Peg? = pegs.firstOrNull { peg ->
-        peg.offset.isOffsetInside(offset, pegRadius)
+    infix fun BoardConfig.boardIndexOfDraggedPeg(pegOffset: Offset): Int = boardIndexes.indexOfLast { boardIndex ->
+        val offsetOfBoardIndex = offsetOfBoardIndex(boardIndex)
+        offsetOfBoardIndex.isOffsetInside(pegOffset, pegRadius)
     }
 
     fun Offset.isOffsetInside(otherOffset: Offset, pegRadius: Float): Boolean {

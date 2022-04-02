@@ -3,8 +3,8 @@ package com.yasinkacmaz.solotest
 typealias RowAndColumn = Pair<Int, Int>
 
 fun Int.toRowAndColumn(gridSize: Int): RowAndColumn {
-    val row = (this % gridSize) + 1
-    val column = (this / gridSize) + 1
+    val row = (this / gridSize) + 1
+    val column = (this % gridSize) + 1
     return row to column
 }
 

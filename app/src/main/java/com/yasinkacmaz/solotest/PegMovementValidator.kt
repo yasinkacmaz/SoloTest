@@ -3,11 +3,18 @@ package com.yasinkacmaz.solotest
 import kotlin.math.abs
 
 object PegMovementValidator {
-    fun isMovementValid(gridSize: Int, pegs: List<Peg>, initialBoardIndex: Int, currentBoardIndex: Int): Boolean {
-        val hasPegAtCurrentIndex = pegs.any { it.boardIndex == currentBoardIndex }
-        if (hasPegAtCurrentIndex) return false
+    fun isMovementValid(
+        pegs: List<Peg>,
+        draggedPeg: Peg,
+        currentBoardIndex: Int,
+        gridSize: Int,
+    ): Boolean {
+        val hasPegAtCurrentIndex = pegs.filter { it != draggedPeg }.find {
+            it.offset == draggedPeg.offset && it.boardIndex == currentBoardIndex
+        }
+        if (hasPegAtCurrentIndex != null) return false
 
-        val (initialRow, initialColumn) = initialBoardIndex.toRowAndColumn(gridSize)
+        val (initialRow, initialColumn) = draggedPeg.boardIndex.toRowAndColumn(gridSize)
         val (currentRow, currentColumn) = currentBoardIndex.toRowAndColumn(gridSize)
 
         val isDiagonalMovement = initialRow != currentRow && initialColumn != currentColumn
@@ -16,24 +23,10 @@ object PegMovementValidator {
         val isMovementOutOfRange = abs(initialRow - currentRow) != 2 && abs(initialColumn - currentColumn) != 2
         if (isMovementOutOfRange) return false
 
-        val isHorizontalMovement = initialRow == currentRow
-        val isVerticalMovement = initialColumn == currentColumn
+        val eatenPegBoardIndex = EatenPegFinder.boardIndexOfEatenPeg(gridSize, draggedPeg.boardIndex, currentBoardIndex)
+        val hasPegWithinRange = pegs.any { peg -> peg.boardIndex == eatenPegBoardIndex }
+        if (!hasPegWithinRange) return false
 
-        if (isHorizontalMovement) {
-            val hasPegWithinRange = pegs.any {
-                val (_, pegColumn) = it.boardIndex.toRowAndColumn(gridSize)
-                abs(currentColumn - pegColumn) == 1
-            }
-            if (!hasPegWithinRange) return false
-        }
-
-        if (isVerticalMovement) {
-            val hasPegWithinRange = pegs.any {
-                val (pegRow, _) = it.boardIndex.toRowAndColumn(gridSize)
-                abs(currentRow - pegRow) == 1
-            }
-            if (!hasPegWithinRange) return false
-        }
         return true
     }
 
@@ -42,10 +35,10 @@ object PegMovementValidator {
         val (currentRow, currentColumn) = currentRowAndColumn
         val isHorizontalMovement = initialRow == currentRow
         return when {
-            isHorizontalMovement && currentColumn > initialColumn -> Direction.DOWN
-            isHorizontalMovement && currentColumn <= initialColumn -> Direction.UP
-            currentRow > initialRow -> Direction.RIGHT
-            else -> Direction.LEFT
+            isHorizontalMovement && currentColumn > initialColumn -> Direction.RIGHT
+            isHorizontalMovement && currentColumn <= initialColumn -> Direction.LEFT
+            currentRow > initialRow -> Direction.DOWN
+            else -> Direction.UP
         }
     }
 }

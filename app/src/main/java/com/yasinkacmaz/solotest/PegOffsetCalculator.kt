@@ -7,8 +7,8 @@ object PegOffsetCalculator {
         val (row, column) = boardIndex.toRowAndColumn(gridSize)
         val boardSize = boardRadius * 2
         val spacingPx = (boardSize - (pegSize * gridSize)) / (gridSize + 1)
-        val pegX = boardStartX + (spacingPx * row) + (pegSize * row) - pegRadius
-        val pegY = boardStartY + (spacingPx * column) + (pegSize * column) - pegRadius
+        val pegX = boardStartX + (spacingPx * column) + (pegSize * column) - pegRadius
+        val pegY = boardStartY + (spacingPx * row) + (pegSize * row) - pegRadius
         return Offset(pegX, pegY)
     }
 }
