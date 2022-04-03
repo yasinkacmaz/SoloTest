@@ -11,7 +11,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.yasinkacmaz.solotest.PegFinder.isOffsetInside
 
@@ -28,15 +30,31 @@ fun SoloTestGame(modifier: Modifier = Modifier, gameState: GameState) = Canvas(m
             color = config.boardColor,
             center = config.boardCenter,
             radius = config.boardRadius,
-            style = Stroke(width = config.boardCircleThickness.dp.toPx())
+            style = Stroke(width = config.boardCircleThickness.toPx())
         )
-        gameState.corners.forEach { rect ->
+        gameState.corners.forEach { corner ->
             drawRect(
                 color = config.boardColor,
-                topLeft = rect.topLeft,
-                size = rect.size,
-                style = Stroke(width = config.cornerLineThickness.dp.toPx())
+                topLeft = corner.rect.topLeft,
+                size = corner.rect.size,
+                style = Stroke(width = config.cornerLineThickness.toPx())
             )
+        }
+
+        val cornerTextPaint = Paint().apply {
+            textSize = config.cornerTextSize.toPx()
+            color = config.boardColor.toArgb()
+            isFakeBoldText = true
+        }
+        gameState.cornerTexts.forEach { cornerText ->
+            rotate(cornerText.rotateDegree, pivot = cornerText.textStart) {
+                drawContext.canvas.nativeCanvas.drawText(
+                    cornerText.text,
+                    cornerText.textStart.x,
+                    cornerText.textStart.y,
+                    cornerTextPaint.apply { textAlign = cornerText.textAlign }
+                )
+            }
         }
     }
 

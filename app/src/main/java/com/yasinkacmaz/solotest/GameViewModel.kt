@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.lifecycle.ViewModel
 import com.yasinkacmaz.solotest.CornerRectangleCalculator.cornerRectangles
+import com.yasinkacmaz.solotest.CornerTextPlacer.cornerTexts
 import com.yasinkacmaz.solotest.PegFinder.boardIndexOfDraggedPeg
 import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,7 @@ class GameViewModel : ViewModel() {
         _gameState.value = GameState(
             config = boardConfig,
             corners = boardConfig.cornerRectangles(),
+            cornerTexts = boardConfig.cornerTexts(),
             holes = boardConfig.holes,
             pegs = pegs
         )
