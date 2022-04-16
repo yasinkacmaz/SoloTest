@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -28,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SoloTestGameRemaining(modifier: Modifier = Modifier, textColor: Color, remainingPegs: Int) {
+fun SoloTestGameRemaining(modifier: Modifier = Modifier, textColor: Color, remaining: Remaining?, remainingPegs: Int) {
     Column(
         modifier.fillMaxSize().padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -37,7 +36,6 @@ fun SoloTestGameRemaining(modifier: Modifier = Modifier, textColor: Color, remai
         val textStyle = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, color = textColor)
         BasicText(text = stringResource(R.string.remaining_peg, remainingPegs), style = textStyle)
         val infiniteTransition = rememberInfiniteTransition()
-        val remaining = remember(remainingPegs) { Remaining.of(remainingPegs) }
         if (remaining != null) {
             val scale by infiniteTransition.animateFloat(
                 initialValue = 1f,

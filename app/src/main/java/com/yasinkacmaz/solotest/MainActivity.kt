@@ -32,10 +32,8 @@ class MainActivity : ComponentActivity() {
             val pegRadius = with(density) { 18.dp.toPx() }
             val gameViewModel: GameViewModel = viewModel(factory = GameViewModelFactory(canvasSize, pegRadius))
 
-            val backgroundColor = if (isSystemInDarkTheme()) Color(0xFF1C1C1C) else Color.White
             val modifier = Modifier
                 .fillMaxSize()
-                .then(Modifier.background(backgroundColor))
                 .pointerInput(Unit) {
                     detectDragGestures(
                         onDragStart = gameViewModel::onDragStart,
@@ -47,15 +45,16 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-            val gameConfig = remember { gameViewModel.gameConfig.value }
+            val gameConfig = remember { gameViewModel.gameConfig }
             val pegs = remember { gameViewModel.pegs }
+            val remaining = gameViewModel.remaining.value
             val textColor = remember { gameConfig.boardConfig.boardColor }
-            Column(verticalArrangement = Arrangement.Center) {
+            val backgroundColor = if (isSystemInDarkTheme()) Color(0xFF1C1C1C) else Color.White
+            Column(verticalArrangement = Arrangement.Center, modifier = Modifier.background(backgroundColor)) {
                 SoloTestGameRemaining(
-                    Modifier
-                        .weight(0.4f)
-                        .background(backgroundColor),
+                    Modifier.weight(0.4f),
                     textColor,
+                    remaining,
                     pegs.size
                 )
                 SoloTestGame(modifier.weight(0.6f), gameConfig, pegs)
