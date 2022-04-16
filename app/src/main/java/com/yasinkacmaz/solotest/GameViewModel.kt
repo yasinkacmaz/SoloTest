@@ -1,9 +1,7 @@
 package com.yasinkacmaz.solotest
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.lifecycle.ViewModel
@@ -15,11 +13,18 @@ import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 
 class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
 
-    private val boardConfig: BoardConfig = BoardConfig(
+    private val boardConfig = BoardConfig(
         boardRadius = canvasSize.minDimension / 2.2f,
         boardCenter = Offset(x = canvasSize.width / 2, y = canvasSize.height / 2),
         pegRadius = pegRadius
     )
+    val gameConfig = GameConfig(
+        boardConfig = boardConfig,
+        corners = boardConfig.cornerRectangles(),
+        cornerTexts = boardConfig.cornerTexts(),
+        holes = boardConfig.holes
+    )
+
     private var draggedPegBoardIndex: Int = -1
     val pegs = mutableStateListOf<Peg>()
 
@@ -27,21 +32,8 @@ class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
         initPegs()
     }
 
-    private val _gameConfig = mutableStateOf(
-        GameConfig(
-            boardConfig = boardConfig,
-            corners = boardConfig.cornerRectangles(),
-            cornerTexts = boardConfig.cornerTexts(),
-            holes = boardConfig.holes
-        )
-    )
-    val gameConfig: State<GameConfig> = _gameConfig
-
-    val gameOver by lazy {
-        derivedStateOf {
-            GameOverDetector.isGameOver(pegs, boardConfig.gridSize)
-        }
-    }
+    val gameOver by lazy { derivedStateOf { GameOverDetector.isGameOver(pegs, boardConfig.gridSize) } }
+    val remaining by lazy { derivedStateOf { Remaining.of(pegs.size) } }
 
     fun onDragStart(offset: Offset) {
         draggedPegBoardIndex = boardConfig.boardIndexOfDraggedPeg(offset)
