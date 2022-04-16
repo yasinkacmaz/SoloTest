@@ -2,6 +2,8 @@
     <string name="app_name">SoloTest</string>
     <string name="remaining_peg">Remaining Pegs: %1$d</string>
     <string name="point">%1$d Point</string>
+    <string name="game_over">Game Over!</string>
+    <string name="play_again">Play Again</string>
 
     <string name="remaining_9">Brainless</string>
     <string name="remaining_8">Idiot</string>

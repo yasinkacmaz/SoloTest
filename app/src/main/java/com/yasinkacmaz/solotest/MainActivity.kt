@@ -24,10 +24,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val screenWidth = with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.toPx() }
-            val screenHeight = with(LocalDensity.current) { LocalConfiguration.current.screenHeightDp.dp.toPx() / 2 }
+            val configuration = LocalConfiguration.current
+            val density = LocalDensity.current
+            val screenWidth = with(density) { configuration.screenWidthDp.dp.toPx() }
+            val screenHeight = with(density) { configuration.screenHeightDp.dp.toPx() / 2 }
             val canvasSize = Size(screenWidth, screenHeight)
-            val pegRadius = LocalDensity.current.run { 18.dp.toPx() }
+            val pegRadius = with(density) { 18.dp.toPx() }
             val gameViewModel: GameViewModel = viewModel(factory = GameViewModelFactory(canvasSize, pegRadius))
 
             val backgroundColor = if (isSystemInDarkTheme()) Color(0xFF1C1C1C) else Color.White
@@ -47,20 +49,24 @@ class MainActivity : ComponentActivity() {
 
             val gameConfig = remember { gameViewModel.gameConfig.value }
             val pegs = remember { gameViewModel.pegs }
+            val textColor = remember { gameConfig.boardConfig.boardColor }
             Column(verticalArrangement = Arrangement.Center) {
                 SoloTestGameRemaining(
                     Modifier
                         .weight(0.4f)
                         .background(backgroundColor),
-                    gameConfig.boardConfig.boardColor,
+                    textColor,
                     pegs.size
                 )
-                SoloTestGame(modifier.weight(0.6f), gameConfig, gameViewModel.pegs)
+                SoloTestGame(modifier.weight(0.6f), gameConfig, pegs)
             }
 
-            val gameOver = remember { gameViewModel.gameOver.value }
-            if (gameOver) {
-                // dialog
+            if (gameViewModel.gameOver.value) {
+                GameOverDialog(
+                    textColor = textColor,
+                    dialogBackgroundColor = gameConfig.boardConfig.pegColor,
+                    onPlayAgainClicked = gameViewModel::onPlayAgainClicked
+                )
             }
         }
     }

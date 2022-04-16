@@ -15,19 +15,16 @@ import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 
 class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
 
-    private var draggedPegBoardIndex: Int = -1
-    val pegs = mutableStateListOf<Peg>()
-
     private val boardConfig: BoardConfig = BoardConfig(
         boardRadius = canvasSize.minDimension / 2.2f,
         boardCenter = Offset(x = canvasSize.width / 2, y = canvasSize.height / 2),
         pegRadius = pegRadius
     )
+    private var draggedPegBoardIndex: Int = -1
+    val pegs = mutableStateListOf<Peg>()
 
     init {
-        pegs.addAll(boardConfig.placeableIndexes.map { boardIndex ->
-            Peg(boardIndex, boardConfig.offsetOfBoardIndex(boardIndex))
-        }.take(5))
+        initPegs()
     }
 
     private val _gameConfig = mutableStateOf(
@@ -87,6 +84,17 @@ class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
         } else {
             pegs[draggedPegIndex] = Peg(initialBoardIndex, boardConfig.offsetOfBoardIndex(initialBoardIndex))
         }
+    }
+
+    fun onPlayAgainClicked() {
+        initPegs()
+    }
+
+    private fun initPegs() {
+        pegs.clear()
+        pegs.addAll(boardConfig.placeableIndexes.map { boardIndex ->
+            Peg(boardIndex, boardConfig.offsetOfBoardIndex(boardIndex))
+        })
     }
 }
 

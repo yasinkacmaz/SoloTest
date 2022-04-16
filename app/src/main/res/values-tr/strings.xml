@@ -3,6 +3,8 @@
     <string name="app_name">SoloTest</string>
     <string name="remaining_peg">Kalan Pin: %1$d</string>
     <string name="point">%1$d Puan</string>
+    <string name="game_over">Oyun Bitti!</string>
+    <string name="play_again">Tekrar Oyna</string>
 
     <string name="remaining_9">Beyinsiz</string>
     <string name="remaining_8">Gerizekalı</string>
