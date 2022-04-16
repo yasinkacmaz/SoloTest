@@ -34,7 +34,7 @@ fun SoloTestGameRemaining(modifier: Modifier = Modifier, textColor: Color, remai
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
     ) {
-        val textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
+        val textStyle = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, color = textColor)
         BasicText(text = stringResource(R.string.remaining_peg, remainingPegs), style = textStyle)
         val infiniteTransition = rememberInfiniteTransition()
         val remaining = remember(remainingPegs) { Remaining.of(remainingPegs) }
