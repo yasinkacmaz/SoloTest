@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SoloTest</string>
+    <string name="remaining_peg">Kalan Pin: %1$d</string>
+    <string name="point">%1$d Puan</string>
+
+    <string name="remaining_9">Beyinsiz</string>
+    <string name="remaining_8">Gerizekalı</string>
+    <string name="remaining_7">Aptal</string>
+    <string name="remaining_6">Tecrübesiz</string>
+    <string name="remaining_5">Normal</string>
+    <string name="remaining_4">Başarılı</string>
+    <string name="remaining_3">Kurnaz</string>
+    <string name="remaining_2">Zeki</string>
+    <string name="remaining_1">Bilgin</string>
+</resources>

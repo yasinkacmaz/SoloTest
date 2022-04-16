@@ -64,19 +64,6 @@ fun SoloTestGame(modifier: Modifier = Modifier, gameState: GameState) = Canvas(m
         }
     }
 
-    drawContext.canvas.nativeCanvas.apply {
-        drawText(
-            "Remaining: ${gameState.pegs.size}",
-            140F,
-            140F,
-            Paint().apply {
-                textSize = 80F
-                this.color = android.graphics.Color.RED
-                textAlign = Paint.Align.LEFT
-            }
-        )
-    }
-
     val holeThicknessPx = config.holeThickness.toPx()
     gameState.holes.forEach { holeOffset ->
         drawCircle(
