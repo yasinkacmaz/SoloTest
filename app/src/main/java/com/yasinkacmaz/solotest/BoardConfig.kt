@@ -1,6 +1,7 @@
 package com.yasinkacmaz.solotest
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
@@ -41,8 +42,8 @@ data class BoardConfig(
     val cornerLineThickness = boardCircleThickness / 2
     val holeThickness = boardCircleThickness / 2
     val cornerTextSize = 15.sp
-    val boardColor = Blue900
-    val pegColor = Yellow700
+    val boardColor = Color(0xFF0D47A1) // Blue900
+    val pegColor = Color(0xFFFBC02D) // Yellow700
     val boardBackgroundColor = boardColor.copy(alpha = 0.7f)
 
     val boardIndexes get() = (0 until gridSize * gridSize).toMutableList()
