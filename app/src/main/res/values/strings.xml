@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">SoloTest</string>
+    <string name="remaining_peg">Remaining Pegs: %1$d</string>
+    <string name="point">%1$d Point</string>
+
+    <string name="remaining_9">Brainless</string>
+    <string name="remaining_8">Idiot</string>
+    <string name="remaining_7">Stupid</string>
+    <string name="remaining_6">Inexperienced</string>
+    <string name="remaining_5">Normal</string>
+    <string name="remaining_4">Successful</string>
+    <string name="remaining_3">Crafty</string>
+    <string name="remaining_2">Clever</string>
+    <string name="remaining_1">Scholar</string>
 </resources>

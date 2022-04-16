@@ -74,7 +74,6 @@ class GameViewModel : ViewModel() {
         } else {
             pegs[draggedPegIndex] = Peg(initialBoardIndex, boardConfig.offsetOfBoardIndex(initialBoardIndex))
         }
-        updateState()
     }
 
     fun onDrag(dragAmount: Offset) {
@@ -82,10 +81,5 @@ class GameViewModel : ViewModel() {
         val draggedPeg = pegs.find { it.boardIndex == draggedPegBoardIndex } ?: return
         val draggedPegIndex = pegs.indexOf(draggedPeg)
         pegs[draggedPegIndex] = draggedPeg.copy(offset = draggedPeg.offset + dragAmount)
-        updateState()
-    }
-
-    private fun updateState(modifier: GameState.() -> GameState = { copy(pegs = this@GameViewModel.pegs) }) {
-        _gameState.value = modifier(_gameState.value)
     }
 }
