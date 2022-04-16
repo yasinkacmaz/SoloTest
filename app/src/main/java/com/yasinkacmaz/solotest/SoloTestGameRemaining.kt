@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -26,20 +28,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SoloTestGameRemaining(modifier: Modifier = Modifier, gameState: GameState) {
+fun SoloTestGameRemaining(modifier: Modifier = Modifier, textColor: Color, remainingPegs: Int) {
     Column(
-        modifier.fillMaxSize(),
+        modifier.fillMaxSize().padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
     ) {
-        val textStyle = TextStyle(
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = gameState.config.boardBackgroundColor
-        )
-        BasicText(text = stringResource(R.string.remaining_peg, gameState.pegs.size), style = textStyle)
+        val textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
+        BasicText(text = stringResource(R.string.remaining_peg, remainingPegs), style = textStyle)
         val infiniteTransition = rememberInfiniteTransition()
-        val remaining = remember(gameState.pegs.size) { Remaining.of(gameState.pegs.size) }
+        val remaining = remember(remainingPegs) { Remaining.of(remainingPegs) }
         if (remaining != null) {
             val scale by infiniteTransition.animateFloat(
                 initialValue = 1f,
@@ -60,7 +58,7 @@ fun SoloTestGameRemaining(modifier: Modifier = Modifier, gameState: GameState) {
             )
             Image(
                 painter = painterResource(id = R.drawable.points),
-                contentDescription = "",
+                contentDescription = null,
                 modifier = Modifier.rotate(angle)
             )
         }

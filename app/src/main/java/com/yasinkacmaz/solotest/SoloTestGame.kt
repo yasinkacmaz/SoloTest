@@ -16,46 +16,46 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 
 @Composable
-fun SoloTestGame(modifier: Modifier = Modifier, gameState: GameState) = Canvas(modifier) {
-    val config = gameState.config
+fun SoloTestGame(modifier: Modifier = Modifier, gameConfig: GameConfig, pegs: List<Peg>) = Canvas(modifier) {
+    val boardConfig = gameConfig.boardConfig
 
     val boardPath = Path().apply {
-        addOval(Rect(center = config.boardCenter, radius = config.boardRadius))
+        addOval(Rect(center = boardConfig.boardCenter, radius = boardConfig.boardRadius))
     }
 
     clipPath(boardPath, ClipOp.Intersect) {
         drawPath(
             path = boardPath,
-            color = config.boardBackgroundColor,
+            color = boardConfig.boardBackgroundColor,
             style = Fill,
             blendMode = BlendMode.SrcAtop
         )
 
         drawCircle(
-            color = config.boardColor,
-            center = config.boardCenter,
-            radius = config.boardRadius,
-            style = Stroke(width = config.boardCircleThickness.toPx())
+            color = boardConfig.boardColor,
+            center = boardConfig.boardCenter,
+            radius = boardConfig.boardRadius,
+            style = Stroke(width = boardConfig.boardCircleThickness.toPx())
         )
 
-        gameState.corners.forEach { corner ->
+        gameConfig.corners.forEach { corner ->
             drawRect(
-                color = config.boardColor,
+                color = boardConfig.boardColor,
                 topLeft = corner.rect.topLeft,
                 size = corner.rect.size,
-                style = Stroke(width = config.cornerLineThickness.toPx())
+                style = Stroke(width = boardConfig.cornerLineThickness.toPx())
             )
         }
 
-        gameState.cornerTexts.forEach { cornerText ->
+        gameConfig.cornerTexts.forEach { cornerText ->
             rotate(cornerText.rotateDegree, pivot = cornerText.textStart) {
                 drawContext.canvas.nativeCanvas.drawText(
                     cornerText.text,
                     cornerText.textStart.x,
                     cornerText.textStart.y,
                     Paint().apply {
-                        textSize = config.cornerTextSize.toPx()
-                        color = config.boardColor.toArgb()
+                        textSize = boardConfig.cornerTextSize.toPx()
+                        color = boardConfig.boardColor.toArgb()
                         isFakeBoldText = true
                         textAlign = cornerText.textAlign
                     }
@@ -64,21 +64,21 @@ fun SoloTestGame(modifier: Modifier = Modifier, gameState: GameState) = Canvas(m
         }
     }
 
-    val holeThicknessPx = config.holeThickness.toPx()
-    gameState.holes.forEach { holeOffset ->
+    val holeThicknessPx = boardConfig.holeThickness.toPx()
+    gameConfig.holes.forEach { holeOffset ->
         drawCircle(
-            color = config.boardColor,
+            color = boardConfig.boardColor,
             center = holeOffset,
-            radius = config.pegRadius,
+            radius = boardConfig.pegRadius,
             style = Stroke(width = holeThicknessPx)
         )
     }
 
-    gameState.pegs.forEach { peg ->
+    pegs.forEach { peg ->
         drawCircle(
-            color = config.pegColor,
+            color = boardConfig.pegColor,
             center = peg.offset,
-            radius = config.pegRadius - holeThicknessPx / 2
+            radius = boardConfig.pegRadius - holeThicknessPx / 2
         )
     }
 }
