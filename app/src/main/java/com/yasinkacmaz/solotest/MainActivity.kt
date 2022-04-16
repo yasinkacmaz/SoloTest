@@ -5,7 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.collectAsState
@@ -24,11 +26,10 @@ class MainActivity : ComponentActivity() {
                 BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                     val gameViewModel: GameViewModel = viewModel()
                     if (savedInstanceState == null) {
-                        val canvasSize = Size(width = maxWidth.toPx(), height = maxHeight.toPx())
+                        val canvasSize = Size(width = maxWidth.toPx(), height = maxHeight.toPx() / 2)
                         val pegRadius = 18.dp.toPx()
                         gameViewModel.createBoardConfig(canvasSize, pegRadius)
                     }
-                    val gameState = gameViewModel.gameState.collectAsState().value
 
                     val modifier = Modifier
                         .fillMaxSize()
@@ -44,7 +45,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                    SoloTestGame(modifier, gameState)
+                    val gameState = gameViewModel.gameState.collectAsState().value
+                    Column(verticalArrangement = Arrangement.Center) {
+                        SoloTestGameRemaining(Modifier.weight(1f), gameState)
+                        SoloTestGame(modifier.weight(1f), gameState)
+                    }
                 }
             }
         }
