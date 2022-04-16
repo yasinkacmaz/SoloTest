@@ -10,7 +10,7 @@ object PegFinder {
         offsetOfBoardIndex.isOffsetInside(pegOffset, pegRadius)
     }
 
-    fun Offset.isOffsetInside(otherOffset: Offset, pegRadius: Float): Boolean {
+    private fun Offset.isOffsetInside(otherOffset: Offset, pegRadius: Float): Boolean {
         val remainingDistance = this - otherOffset
         return remainingDistance.x.absoluteValue <= pegRadius && remainingDistance.y.absoluteValue <= pegRadius
     }

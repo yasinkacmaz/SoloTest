@@ -4,33 +4,28 @@ plugins {
 }
 
 android {
-    compileSdk = Config.compileSdk
-
     defaultConfig {
         applicationId = "com.yasinkacmaz.solotest"
         minSdk = Config.minSdk
         targetSdk = Config.targetSdk
+        compileSdk = Config.compileSdk
         versionCode = Config.versionCode
         versionName = Config.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
     compileOptions {
         sourceCompatibility = Config.JAVA_VERSION
         targetCompatibility = Config.JAVA_VERSION
     }
+
     kotlinOptions {
         jvmTarget = Config.JAVA_VERSION.toString()
     }
@@ -49,16 +44,7 @@ android {
 }
 
 dependencies {
-    // AndroidX
     implementation(libs.bundles.androidx)
-
-    // Compose
     implementation(libs.compose.ui)
-    implementation(libs.compose.material)
-    implementation(libs.compose.toolingPreview)
-    debugImplementation(libs.compose.tooling)
-
-    // Test
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.bundles.androidTest)
+    implementation(libs.compose.foundation)
 }
