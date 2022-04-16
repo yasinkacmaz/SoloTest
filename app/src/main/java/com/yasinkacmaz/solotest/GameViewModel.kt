@@ -1,48 +1,61 @@
 package com.yasinkacmaz.solotest
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.yasinkacmaz.solotest.CornerRectangleCalculator.cornerRectangles
 import com.yasinkacmaz.solotest.CornerTextPlacer.cornerTexts
 import com.yasinkacmaz.solotest.PegFinder.boardIndexOfDraggedPeg
 import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
-class GameViewModel : ViewModel() {
+class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
 
-    private lateinit var boardConfig: BoardConfig
     private var draggedPegBoardIndex: Int = -1
-    private val pegs = mutableStateListOf<Peg>()
+    val pegs = mutableStateListOf<Peg>()
 
-    private val _gameState = MutableStateFlow(GameState())
-    val gameState = _gameState.asStateFlow()
+    private val boardConfig: BoardConfig = BoardConfig(
+        boardRadius = canvasSize.minDimension / 2.2f,
+        boardCenter = Offset(x = canvasSize.width / 2, y = canvasSize.height / 2),
+        pegRadius = pegRadius
+    )
 
-    fun createBoardConfig(canvasSize: Size, pegRadius: Float) {
-        boardConfig = BoardConfig(
-            boardRadius = canvasSize.minDimension / 2.2f,
-            boardCenter = Offset(x = canvasSize.width / 2, y = canvasSize.height / 2),
-            pegRadius = pegRadius
-        )
-
-        pegs.clear()
+    init {
         pegs.addAll(boardConfig.placeableIndexes.map { boardIndex ->
             Peg(boardIndex, boardConfig.offsetOfBoardIndex(boardIndex))
-        })
+        }.take(5))
+    }
 
-        _gameState.value = GameState(
-            config = boardConfig,
+    private val _gameConfig = mutableStateOf(
+        GameConfig(
+            boardConfig = boardConfig,
             corners = boardConfig.cornerRectangles(),
             cornerTexts = boardConfig.cornerTexts(),
-            holes = boardConfig.holes,
-            pegs = pegs
+            holes = boardConfig.holes
         )
+    )
+    val gameConfig: State<GameConfig> = _gameConfig
+
+    val gameOver by lazy {
+        derivedStateOf {
+            GameOverDetector.isGameOver(pegs, boardConfig.gridSize)
+        }
     }
 
     fun onDragStart(offset: Offset) {
         draggedPegBoardIndex = boardConfig.boardIndexOfDraggedPeg(offset)
+    }
+
+    fun onDrag(dragAmount: Offset) {
+        if (draggedPegBoardIndex !in boardConfig.boardIndexes) return
+        val draggedPeg = pegs.find { it.boardIndex == draggedPegBoardIndex } ?: return
+
+        val draggedPegIndex = pegs.indexOf(draggedPeg)
+        pegs[draggedPegIndex] = draggedPeg.copy(offset = draggedPeg.offset + dragAmount)
     }
 
     fun onDragEnd() {
@@ -55,7 +68,7 @@ class GameViewModel : ViewModel() {
             false
         } else {
             PegMovementValidator.isMovementValid(
-                pegs = _gameState.value.pegs,
+                pegs = pegs,
                 draggedPeg = draggedPeg,
                 gridSize = boardConfig.gridSize,
                 currentBoardIndex = currentBoardIndex
@@ -75,11 +88,12 @@ class GameViewModel : ViewModel() {
             pegs[draggedPegIndex] = Peg(initialBoardIndex, boardConfig.offsetOfBoardIndex(initialBoardIndex))
         }
     }
+}
 
-    fun onDrag(dragAmount: Offset) {
-        if (draggedPegBoardIndex !in boardConfig.boardIndexes) return
-        val draggedPeg = pegs.find { it.boardIndex == draggedPegBoardIndex } ?: return
-        val draggedPegIndex = pegs.indexOf(draggedPeg)
-        pegs[draggedPegIndex] = draggedPeg.copy(offset = draggedPeg.offset + dragAmount)
-    }
+@Suppress("UNCHECKED_CAST")
+class GameViewModelFactory(
+    private val canvasSize: Size,
+    private val pegRadius: Float
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = GameViewModel(canvasSize, pegRadius) as T
 }
