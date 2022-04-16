@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
             val pegs = remember { gameViewModel.pegs }
             val remaining = gameViewModel.remaining.value
             val textColor = remember { gameConfig.boardConfig.boardColor }
-            val backgroundColor = if (isSystemInDarkTheme()) Color(0xFF1C1C1C) else Color.White
+            val backgroundColor = if (isSystemInDarkTheme()) Color(0xFF1C1C1C) else Color(0xFFE8E5DF)
             Column(verticalArrangement = Arrangement.Center, modifier = Modifier.background(backgroundColor)) {
                 SoloTestGameRemaining(
                     Modifier.weight(0.4f),

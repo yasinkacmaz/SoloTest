@@ -32,8 +32,8 @@ class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
         initPegs()
     }
 
-    val gameOver by lazy { derivedStateOf { GameOverDetector.isGameOver(pegs, boardConfig.gridSize) } }
-    val remaining by lazy { derivedStateOf { Remaining.of(pegs.size) } }
+    val gameOver = derivedStateOf { GameOverDetector.isGameOver(pegs, boardConfig.gridSize) }
+    val remaining = derivedStateOf { Remaining.of(pegs.size) }
 
     fun onDragStart(offset: Offset) {
         draggedPegBoardIndex = boardConfig.boardIndexOfDraggedPeg(offset)

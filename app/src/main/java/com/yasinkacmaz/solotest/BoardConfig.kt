@@ -7,9 +7,10 @@ import androidx.compose.ui.unit.sp
 import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 
 /*
+This is English style Peg Solitaire board
 Think of circle board as a grid
-Center and corner pins are empty initially
-That means there will be 32 pins initially
+Center and corner holes are empty initially
+That means there will be 32 pegs initially
 
 00 01 02 03 04 05 06
 07 08 09 10 11 12 13
@@ -44,6 +45,7 @@ data class BoardConfig(
     val cornerTextSize = 15.sp
     val boardColor = Color(0xFF0D47A1) // Blue900
     val pegColor = Color(0xFFFBC02D) // Yellow700
+    val pegGradientColors = listOf(pegColor, Color(0xFF3D3317))
     val boardBackgroundColor = boardColor.copy(alpha = 0.7f)
 
     val boardIndexes get() = (0 until gridSize * gridSize).toMutableList()
