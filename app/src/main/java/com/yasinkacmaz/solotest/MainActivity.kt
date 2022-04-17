@@ -1,13 +1,14 @@
 package com.yasinkacmaz.solotest
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -26,13 +27,26 @@ class MainActivity : ComponentActivity() {
         setContent {
             val configuration = LocalConfiguration.current
             val density = LocalDensity.current
-            val screenWidth = with(density) { configuration.screenWidthDp.dp.toPx() }
-            val screenHeight = with(density) { configuration.screenHeightDp.dp.toPx() / 2 }
-            val canvasSize = Size(screenWidth, screenHeight)
+            val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+            val canvasSize = if (isPortrait) {
+                val canvasWidth = with(density) { configuration.screenWidthDp.dp.toPx() }
+                val canvasHeight = with(density) { configuration.screenHeightDp.dp.toPx() / 2 }
+                Size(canvasWidth, canvasHeight)
+            } else {
+                val canvasWidth = with(density) { configuration.screenWidthDp.dp.toPx() / 2 }
+                val canvasHeight = with(density) { configuration.screenHeightDp.dp.toPx() }
+                Size(canvasWidth, canvasHeight)
+            }
+
             val pegRadius = with(density) { 18.dp.toPx() }
             val gameViewModel: GameViewModel = viewModel(factory = GameViewModelFactory(canvasSize, pegRadius))
 
-            val modifier = Modifier
+            val gameConfig = remember { gameViewModel.gameConfig }
+            val pegs = remember { gameViewModel.pegs }
+            val remaining = gameViewModel.remaining.value
+            val textColor = remember { gameConfig.boardConfig.boardColor }
+            val backgroundColor = if (isSystemInDarkTheme()) Color(0xFF1C1C1C) else Color(0xFFE8E5DF)
+            val boardModifier = Modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
                     detectDragGestures(
@@ -45,19 +59,16 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-            val gameConfig = remember { gameViewModel.gameConfig }
-            val pegs = remember { gameViewModel.pegs }
-            val remaining = gameViewModel.remaining.value
-            val textColor = remember { gameConfig.boardConfig.boardColor }
-            val backgroundColor = if (isSystemInDarkTheme()) Color(0xFF1C1C1C) else Color(0xFFE8E5DF)
-            Column(verticalArrangement = Arrangement.Center, modifier = Modifier.background(backgroundColor)) {
-                SoloTestGameRemaining(
-                    Modifier.weight(0.4f),
-                    textColor,
-                    remaining,
-                    pegs.size
-                )
-                SoloTestGame(modifier.weight(0.6f), gameConfig, pegs)
+            if (isPortrait) {
+                Column(Modifier.background(backgroundColor)) {
+                    SoloTestGameRemaining(Modifier.weight(0.4f), textColor, remaining, pegs.size)
+                    SoloTestGame(boardModifier.weight(0.6f), gameConfig, pegs)
+                }
+            } else {
+                Row(Modifier.background(backgroundColor)) {
+                    SoloTestGameRemaining(Modifier.weight(0.4f), textColor, remaining, pegs.size)
+                    SoloTestGame(boardModifier.weight(0.6f), gameConfig, pegs)
+                }
             }
 
             if (gameViewModel.gameOver.value) {
