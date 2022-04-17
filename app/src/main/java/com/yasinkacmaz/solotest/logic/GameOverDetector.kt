@@ -1,4 +1,10 @@
-package com.yasinkacmaz.solotest
+package com.yasinkacmaz.solotest.logic
+
+import com.yasinkacmaz.solotest.util.Direction
+import com.yasinkacmaz.solotest.data.Peg
+import com.yasinkacmaz.solotest.data.Remaining
+import com.yasinkacmaz.solotest.util.toBoardIndex
+import com.yasinkacmaz.solotest.util.toRowAndColumn
 
 object GameOverDetector {
     fun isGameOver(pegs: List<Peg>, gridSize: Int): Boolean {
