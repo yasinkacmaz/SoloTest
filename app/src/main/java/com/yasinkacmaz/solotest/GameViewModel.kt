@@ -1,15 +1,12 @@
 package com.yasinkacmaz.solotest
 
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.yasinkacmaz.solotest.CornerRectangleCalculator.cornerRectangles
-import com.yasinkacmaz.solotest.CornerTextPlacer.cornerTexts
-import com.yasinkacmaz.solotest.PegFinder.boardIndexOfDraggedPeg
-import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 
 class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
 
@@ -20,23 +17,28 @@ class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
     )
     val gameConfig = GameConfig(
         boardConfig = boardConfig,
-        corners = boardConfig.cornerRectangles(),
-        cornerTexts = boardConfig.cornerTexts(),
+        corners = CornerRectangleCalculator.cornerRectangles(boardConfig),
+        cornerTexts = CornerTextPlacer.cornerTexts(boardConfig),
         holes = boardConfig.holes
     )
 
     private var draggedPegBoardIndex: Int = -1
     val pegs = mutableStateListOf<Peg>()
 
+    val isGameOver
+        @Composable
+        get() = remember(pegs.size) { GameOverDetector.isGameOver(pegs, gameConfig.boardConfig.gridSize) }
+
+    val remaining
+        @Composable
+        get() = remember(pegs.size) { Remaining.of(pegs.size) }
+
     init {
         initPegs()
     }
 
-    val gameOver = derivedStateOf { GameOverDetector.isGameOver(pegs, boardConfig.gridSize) }
-    val remaining = derivedStateOf { Remaining.of(pegs.size) }
-
     fun onDragStart(offset: Offset) {
-        draggedPegBoardIndex = boardConfig.boardIndexOfDraggedPeg(offset)
+        draggedPegBoardIndex = PegFinder.boardIndexOfDraggedPeg(boardConfig, offset)
     }
 
     fun onDrag(dragAmount: Offset) {
@@ -52,7 +54,7 @@ class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
         val draggedPeg = pegs.find { it.boardIndex == draggedPegBoardIndex } ?: return
         val draggedPegIndex = pegs.indexOf(draggedPeg)
         val initialBoardIndex = draggedPeg.boardIndex
-        val currentBoardIndex = boardConfig.boardIndexOfDraggedPeg(draggedPeg.offset)
+        val currentBoardIndex = PegFinder.boardIndexOfDraggedPeg(boardConfig, draggedPeg.offset)
         val isMovementValid = if (currentBoardIndex !in boardConfig.playableIndexes) {
             false
         } else {
@@ -71,10 +73,11 @@ class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
                 currentBoardIndex
             )
             pegs.removeAll { it.boardIndex == initialBoardIndex || it.boardIndex == eatenPegBoardIndex }
-            val peg = Peg(currentBoardIndex, boardConfig.offsetOfBoardIndex(currentBoardIndex))
+            val peg = Peg(currentBoardIndex, PegOffsetCalculator.offsetOfBoardIndex(boardConfig, currentBoardIndex))
             pegs.add(peg)
         } else {
-            pegs[draggedPegIndex] = Peg(initialBoardIndex, boardConfig.offsetOfBoardIndex(initialBoardIndex))
+            pegs[draggedPegIndex] =
+                Peg(initialBoardIndex, PegOffsetCalculator.offsetOfBoardIndex(boardConfig, initialBoardIndex))
         }
     }
 
@@ -85,7 +88,7 @@ class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
     private fun initPegs() {
         pegs.clear()
         pegs.addAll(boardConfig.placeableIndexes.map { boardIndex ->
-            Peg(boardIndex, boardConfig.offsetOfBoardIndex(boardIndex))
+            Peg(boardIndex, PegOffsetCalculator.offsetOfBoardIndex(boardConfig, boardIndex))
         })
     }
 }

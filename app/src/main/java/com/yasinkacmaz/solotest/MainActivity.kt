@@ -43,7 +43,6 @@ class MainActivity : ComponentActivity() {
 
             val gameConfig = remember { gameViewModel.gameConfig }
             val pegs = remember { gameViewModel.pegs }
-            val remaining = gameViewModel.remaining.value
             val textColor = remember { gameConfig.boardConfig.boardColor }
             val backgroundColor = if (isSystemInDarkTheme()) Color(0xFF1C1C1C) else Color(0xFFE8E5DF)
             val boardModifier = Modifier
@@ -61,17 +60,17 @@ class MainActivity : ComponentActivity() {
 
             if (isPortrait) {
                 Column(Modifier.background(backgroundColor)) {
-                    SoloTestGameRemaining(Modifier.weight(0.4f), textColor, remaining, pegs.size)
+                    SoloTestGameRemaining(Modifier.weight(0.4f), textColor, gameViewModel.remaining, pegs.size)
                     SoloTestGame(boardModifier.weight(0.6f), gameConfig, pegs)
                 }
             } else {
                 Row(Modifier.background(backgroundColor)) {
-                    SoloTestGameRemaining(Modifier.weight(0.4f), textColor, remaining, pegs.size)
+                    SoloTestGameRemaining(Modifier.weight(0.4f), textColor, gameViewModel.remaining, pegs.size)
                     SoloTestGame(boardModifier.weight(0.6f), gameConfig, pegs)
                 }
             }
 
-            if (gameViewModel.gameOver.value) {
+            if (gameViewModel.isGameOver) {
                 GameOverDialog(
                     textColor = textColor,
                     dialogBackgroundColor = gameConfig.boardConfig.pegColor,
