@@ -1,4 +1,4 @@
-package com.yasinkacmaz.solotest
+package com.yasinkacmaz.solotest.ui
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -20,6 +20,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.yasinkacmaz.solotest.logic.GameViewModel
+import com.yasinkacmaz.solotest.logic.GameViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +30,7 @@ class MainActivity : ComponentActivity() {
             val configuration = LocalConfiguration.current
             val density = LocalDensity.current
             val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+            val pegRadius = with(density) { 18.dp.toPx() }
             val canvasSize = if (isPortrait) {
                 val canvasWidth = with(density) { configuration.screenWidthDp.dp.toPx() }
                 val canvasHeight = with(density) { configuration.screenHeightDp.dp.toPx() / 2 }
@@ -38,7 +41,6 @@ class MainActivity : ComponentActivity() {
                 Size(canvasWidth, canvasHeight)
             }
 
-            val pegRadius = with(density) { 18.dp.toPx() }
             val gameViewModel: GameViewModel = viewModel(factory = GameViewModelFactory(canvasSize, pegRadius))
 
             val gameConfig = remember { gameViewModel.gameConfig }

@@ -1,4 +1,4 @@
-package com.yasinkacmaz.solotest
+package com.yasinkacmaz.solotest.data
 
 import androidx.compose.ui.geometry.Offset
 

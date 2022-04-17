@@ -1,7 +1,8 @@
-package com.yasinkacmaz.solotest
+package com.yasinkacmaz.solotest.data
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.yasinkacmaz.solotest.R
 
 @Suppress("unused")
 enum class Remaining(@StringRes val textResId: Int, val point: Int, @DrawableRes val imageResId: Int) {

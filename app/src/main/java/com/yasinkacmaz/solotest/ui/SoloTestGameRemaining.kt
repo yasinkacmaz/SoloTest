@@ -1,4 +1,4 @@
-package com.yasinkacmaz.solotest
+package com.yasinkacmaz.solotest.ui
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -25,6 +25,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yasinkacmaz.solotest.R
+import com.yasinkacmaz.solotest.data.Remaining
 
 @Composable
 fun SoloTestGameRemaining(modifier: Modifier = Modifier, textColor: Color, remaining: Remaining?, remainingPegs: Int) {

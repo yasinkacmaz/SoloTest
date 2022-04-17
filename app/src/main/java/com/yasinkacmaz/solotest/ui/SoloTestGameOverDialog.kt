@@ -1,4 +1,4 @@
-package com.yasinkacmaz.solotest
+package com.yasinkacmaz.solotest.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.yasinkacmaz.solotest.R
 
 @Composable
 fun GameOverDialog(textColor: Color, dialogBackgroundColor: Color, onPlayAgainClicked: () -> Unit) {
