@@ -4,7 +4,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yasinkacmaz.solotest.PegOffsetCalculator.offsetOfBoardIndex
 
 /*
 This is English style Peg Solitaire board
@@ -63,5 +62,5 @@ data class BoardConfig(
         it.removeAll(cornerIndexes)
     }
 
-    val holes = playableIndexes.map { boardIndex -> offsetOfBoardIndex(boardIndex) }
+    val holes = playableIndexes.map { boardIndex -> PegOffsetCalculator.offsetOfBoardIndex(this, boardIndex) }
 }

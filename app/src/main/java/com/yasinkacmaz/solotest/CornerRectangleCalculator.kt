@@ -9,14 +9,14 @@ import com.yasinkacmaz.solotest.Corner.TOP_LEFT
 import com.yasinkacmaz.solotest.Corner.TOP_RIGHT
 
 object CornerRectangleCalculator {
-    fun BoardConfig.cornerRectangles(): List<CornerRectangle> {
+    fun cornerRectangles(boardConfig: BoardConfig): List<CornerRectangle> = with(boardConfig) {
         val boardStart = Offset(boardStartX, boardStartY)
         val cornerLength = cornerSize * (spacingPx + pegSize)
         val cornerSize = Size(cornerLength, cornerLength)
         val cornerStartX = boardStartX + boardRadius * 2 - cornerLength
         val cornerStartY = boardStartY + boardRadius * 2 - cornerLength
 
-        return Corner.values.map { corner ->
+        Corner.values.map { corner ->
             val rect = when(corner) {
                 TOP_LEFT -> Rect(offset = boardStart, size = cornerSize)
                 TOP_RIGHT -> Rect(offset = boardStart.copy(x = cornerStartX), size = cornerSize)

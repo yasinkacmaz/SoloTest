@@ -9,10 +9,9 @@ object PegMovementValidator {
         currentBoardIndex: Int,
         gridSize: Int,
     ): Boolean {
-        val hasPegAtCurrentIndex = pegs.filter { it != draggedPeg }.find {
-            it.offset == draggedPeg.offset && it.boardIndex == currentBoardIndex
-        }
-        if (hasPegAtCurrentIndex != null) return false
+        val hasPegAtCurrentIndex = pegs.filter { it != draggedPeg }
+            .any { it.offset == draggedPeg.offset && it.boardIndex == currentBoardIndex }
+        if (hasPegAtCurrentIndex) return false
 
         val (initialRow, initialColumn) = draggedPeg.boardIndex.toRowAndColumn(gridSize)
         val (currentRow, currentColumn) = currentBoardIndex.toRowAndColumn(gridSize)
@@ -28,17 +27,5 @@ object PegMovementValidator {
         if (!hasPegWithinRange) return false
 
         return true
-    }
-
-    fun directionOfMovement(initialRowAndColumn: RowAndColumn, currentRowAndColumn: RowAndColumn): Direction {
-        val (initialRow, initialColumn) = initialRowAndColumn
-        val (currentRow, currentColumn) = currentRowAndColumn
-        val isHorizontalMovement = initialRow == currentRow
-        return when {
-            isHorizontalMovement && currentColumn > initialColumn -> Direction.RIGHT
-            isHorizontalMovement && currentColumn <= initialColumn -> Direction.LEFT
-            currentRow > initialRow -> Direction.DOWN
-            else -> Direction.UP
-        }
     }
 }
