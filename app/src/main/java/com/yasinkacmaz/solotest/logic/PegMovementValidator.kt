@@ -11,8 +11,7 @@ object PegMovementValidator {
         currentBoardIndex: Int,
         gridSize: Int,
     ): Boolean {
-        val hasPegAtCurrentIndex = pegs.filter { it != draggedPeg }
-            .any { it.offset == draggedPeg.offset && it.boardIndex == currentBoardIndex }
+        val hasPegAtCurrentIndex = pegs.any { it.boardIndex == currentBoardIndex }
         if (hasPegAtCurrentIndex) return false
 
         val (initialRow, initialColumn) = draggedPeg.boardIndex.toRowAndColumn(gridSize)
