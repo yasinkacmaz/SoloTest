@@ -31,7 +31,7 @@ class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
 
     val isGameOver
         @Composable
-        get() = remember(pegs.size) { GameOverDetector.isGameOver(pegs, gameConfig.boardConfig.gridSize) }
+        get() = remember(pegs.size) { GameOverDetector.isGameOver(pegs, boardConfig) }
 
     val remaining
         @Composable
@@ -59,16 +59,8 @@ class GameViewModel(canvasSize: Size, pegRadius: Float) : ViewModel() {
         val draggedPegIndex = pegs.indexOf(draggedPeg)
         val initialBoardIndex = draggedPeg.boardIndex
         val currentBoardIndex = PegFinder.boardIndexOfDraggedPeg(boardConfig, draggedPeg.offset)
-        val isMovementValid = if (currentBoardIndex !in boardConfig.playableIndexes) {
-            false
-        } else {
-            PegMovementValidator.isMovementValid(
-                pegs = pegs,
-                draggedPeg = draggedPeg,
-                gridSize = boardConfig.gridSize,
-                currentBoardIndex = currentBoardIndex
-            )
-        }
+
+        val isMovementValid = PegMovementValidator.isMovementValid(pegs, draggedPeg, currentBoardIndex, boardConfig)
 
         if (isMovementValid) {
             val eatenPegBoardIndex = EatenPegFinder.boardIndexOfEatenPeg(
